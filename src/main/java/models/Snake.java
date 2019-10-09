@@ -2,27 +2,38 @@ package models;
 
 import models.contracts.Eatable;
 import models.contracts.Predator;
-import util.Direction;
+import settings.SettingUtil;
+import util.direction.Direction;
+import util.direction.DirectionObserver;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
 
-public class Snake extends Character implements Predator {
+public class Snake extends Character implements Predator, DirectionObserver {
 
-    private Deque<Point> body;
+    private Deque<Point> body = new ArrayDeque<>();
+    protected long speed = SettingUtil.SNAKE_SPEED;
 
-
-    @Override
-    protected void spawn() {
-        this.body = new ArrayDeque<>(); //todo
+    public Snake(int size) {
+        while (this.body.size() < size) {
+            System.out.println("add point to body");
+            this.body.add(new Point(SettingUtil.SCALE, body.size() * SettingUtil.SCALE));
+        }
+        System.out.println(this.body.size());
     }
+//    @Override
+//    protected void spawn() {
+//        this.body = new ArrayDeque<>(); //todo
+//    }
 
     @Override
     public void move(Direction direction) {
-        this.body.getFirst().moveToDirection(direction);
-        this.body.removeLast();
+        System.out.println("snake moves!");
+        body.getFirst().moveToDirection(direction);
+        position = this.body.getFirst();
+        lastPosition = this.body.getLast();
+        body.removeLast();
+        notifyObservers();
     }
 
     public Deque<Point> getBody() {
@@ -43,4 +54,10 @@ public class Snake extends Character implements Predator {
     public void getDamage() {
         this.body.removeLast();
     }
+
+    @Override
+    public void update(Direction direction) {
+        this.direction = direction;
+    }
+
 }
