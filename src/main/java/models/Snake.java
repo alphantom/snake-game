@@ -8,16 +8,20 @@ import util.direction.DirectionObserver;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Snake extends Character implements Predator, DirectionObserver {
 
-    private Deque<Point> body = new ArrayDeque<>();
+    private List<Point> body;
     protected long speed = SettingUtil.SNAKE_SPEED;
+    protected Direction direction = Direction.RIGHT;
 
     public Snake(int size) {
-        while (this.body.size() < size) {
+        body = new LinkedList<>();
+        while (body.size() < size) {
             System.out.println("add point to body");
-            this.body.add(new Point(SettingUtil.SCALE, body.size() * SettingUtil.SCALE));
+            body.add(new Point(SettingUtil.SCALE, body.size() * SettingUtil.SCALE));
         }
         System.out.println(this.body.size());
     }
@@ -27,17 +31,26 @@ public class Snake extends Character implements Predator, DirectionObserver {
 //    }
 
     @Override
-    public void move(Direction direction) {
+    public void move() {
         System.out.println("snake moves!");
-        body.getFirst().moveToDirection(direction);
-        position = this.body.getFirst();
-        lastPosition = this.body.getLast();
-        body.removeLast();
+        Point last = body.get(body.size() - 1);
+        position = new Point(last.getX(), last.getY());
+        position.moveToDirection(direction);
+        body.add(position);
+        lastPosition = body.get(0);
+        if (true) {
+            body.remove(0);
+        }
         notifyObservers();
     }
 
-    public Deque<Point> getBody() {
+    public List<Point> getBody() {
         return body;
+    }
+
+    @Override
+    public long getSpeed() {
+        return speed;
     }
 
     @Override
@@ -47,12 +60,12 @@ public class Snake extends Character implements Predator, DirectionObserver {
 
     @Override
     public void growth(Point point) {
-        this.body.addFirst(point);
+        //
     }
 
     @Override
     public void getDamage() {
-        this.body.removeLast();
+        body.remove(0);
     }
 
     @Override

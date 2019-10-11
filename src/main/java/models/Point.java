@@ -26,23 +26,24 @@ public class Point {
     }
 
     public void moveUp() {
-        previousX = x;
-        x+=step;
+        previousY = y;
+        y-=step;
+
     }
 
     public void moveDown() {
+        previousY = y;
+        y+=step;
+    }
+
+    public void moveLeft() {
         previousX = x;
         x-=step;
     }
 
-    public void moveLeft() {
-        previousY = y;
-        y-=step;
-    }
-
     public void moveRight() {
-        previousY = y;
-        y+=step;
+        previousX = x;
+        x+=step;
     }
 
     public void moveToDirection(Direction direction) {

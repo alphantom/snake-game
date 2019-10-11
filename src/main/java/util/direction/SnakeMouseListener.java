@@ -40,6 +40,7 @@ public class SnakeMouseListener implements MouseListener, DirectionSubject {
                 currentDirection = Direction.UP;
                 break;
         }
+        notifyObservers();
     }
 
     private void turnRight() {

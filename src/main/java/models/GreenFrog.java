@@ -9,7 +9,7 @@ import util.direction.DirectionObserver;
 public class GreenFrog extends Character implements Eatable, DirectionObserver {
 
     protected long speed = SettingUtil.FROG_SPEED;
-
+    protected Direction direction = Direction.RIGHT;
 //    @Override
 //    protected void spawn() {
 //        this.position = new Point(0,0); //todo
@@ -25,20 +25,17 @@ public class GreenFrog extends Character implements Eatable, DirectionObserver {
     }
 
     @Override
-    public void move(Direction direction) {
-        try {
-            Thread.sleep(speed);
-        } catch (InterruptedException e) {
-            System.out.println("error");
-            e.printStackTrace();
-        }
-        System.out.println("frog moves!");
+    public void move() {
+        System.out.println("frog moves to " + direction.name() +"!");
         lastPosition = position;
         this.position.moveToDirection(direction);
         notifyObservers();
     }
 
-
+    @Override
+    public long getSpeed() {
+        return speed;
+    }
 
     @Override
     public void effect(Predator predator) {

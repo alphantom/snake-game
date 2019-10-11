@@ -2,6 +2,9 @@ package models;
 
 import models.contracts.MovableObserver;
 import settings.SettingUtil;
+import util.direction.DirectionObserver;
+import util.direction.DirectionSubject;
+import util.direction.SnakeMouseListener;
 import util.draw.DrawObserver;
 import util.draw.DrawSubject;
 
@@ -14,6 +17,8 @@ public class Field implements DrawSubject, MovableObserver {
     private Snake snake;
     private final List<GreenFrog> frogs;
 
+    private DirectionSubject directionManager;
+
     private int width = SettingUtil.WIDTH / SettingUtil.SCALE;
     private int height = SettingUtil.HEIGHT / SettingUtil.SCALE;
 
@@ -21,12 +26,14 @@ public class Field implements DrawSubject, MovableObserver {
     private final Set<Point> changes = new HashSet<>();
     private final Set<DrawObserver> observers = new HashSet<>();
 
-    public Field() { // todo make startGame method
+    public Field(DirectionSubject directionSubject) { // todo make startGame method
+        directionManager = directionSubject;
         snake = new Snake(SettingUtil.SNAKE_LENGTH);
         snake.registerObserver(this);
+        directionManager.registerObserver(snake);
         changes.addAll(snake.getBody());
-//        Thread snakeThread = new Thread(snake);
-//        snakeThread.start();
+        Thread snakeThread = new Thread(snake);
+        snakeThread.start();
 
         frogs = new ArrayList<>();
         spawnFrog();
@@ -39,6 +46,7 @@ public class Field implements DrawSubject, MovableObserver {
             frog.registerObserver(this);
             frogs.add(frog);
             changes.add(frog.getPosition());
+            directionManager.registerObserver(frog);
             Thread frogThread = new Thread(frog);
             frogThread.start();
         }
@@ -67,5 +75,9 @@ public class Field implements DrawSubject, MovableObserver {
         if (changes != null) changes.remove(from);
         changes.add(to);
         notifyDrawObservers();
+    }
+
+    public void addDirectionSubject(DirectionSubject directionSubject) {
+        directionManager = directionSubject;
     }
 }

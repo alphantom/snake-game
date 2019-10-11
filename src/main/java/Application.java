@@ -1,6 +1,3 @@
-import models.Field;
-import settings.SettingUtil;
-import view.GamePanel;
 import view.MainWindow;
 
 public class Application {

@@ -13,8 +13,6 @@ import java.awt.*;
 public class MainWindow extends JFrame {
 
     private GamePanel gamePanel;
-    private Snake snake;
-    private GreenFrog frog;
     private SnakeMouseListener mouseListener = new SnakeMouseListener();
 
     public MainWindow() {
@@ -29,7 +27,8 @@ public class MainWindow extends JFrame {
         this.add(gamePanel);
 
 
-        Field field = new Field();
+        Field field = new Field(mouseListener);
         field.registerDrawObserver(gamePanel);
+
     }
 }

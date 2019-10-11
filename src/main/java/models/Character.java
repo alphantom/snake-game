@@ -9,7 +9,7 @@ import java.util.Set;
 
 public abstract class Character implements Runnable, Movable {
 
-    protected Direction direction = Direction.LEFT;
+//    protected Direction direction = Direction.RIGHT;
     protected long speed;
     protected boolean isAlive = true;
 
@@ -36,27 +36,31 @@ public abstract class Character implements Runnable, Movable {
     @Override
     public void run() {
         while(isAlive) {
+            move();
             try {
-                Thread.sleep(speed);
+                System.out.println(this.getClass().toString() + "'s speed is " + getSpeed());
+                Thread.sleep(getSpeed());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            move(direction);
         }
     }
 
-    public Direction getDirection() {
-        return direction;
-    }
-
-    public void setDirection(Direction direction) {
-        this.direction = direction;
-    }
+//    public Direction getDirection() {
+//        return direction;
+//    }
+//
+//    public void setDirection(Direction direction) {
+//        this.direction = direction;
+//    }
 
     public void setSpeed(long speed) {
         this.speed = speed;
     }
 
+    public long getSpeed() {
+        return speed;
+    }
 //    protected abstract void spawn();
 
     public void die() {
