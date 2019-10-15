@@ -13,36 +13,42 @@ public class Point {
     private int x;
     private int y;
 
-    private final int step = SettingUtil.SCALE;
+    // Color TODO encapsulate color
+    private int r;
+    private int g;
+    private int b;
 
-    private int previousX;
-    private int previousY;
+    private final int step = SettingUtil.SCALE;
 
     public Point(int x, int y) {
         this.x = x;
         this.y = y;
-        this.previousX = x;
-        this.previousY = y;
+        this.r = 0;
+        this.g = 204;
+        this.b = 0;
     }
 
-    public void moveUp() {
-        previousY = y;
-        y-=step;
+    public Point(int x, int y, int[] color) {
+        this.x = x;
+        this.y = y;
+        this.r = color[0];
+        this.g = color[1];
+        this.b = color[2];
 
+    }
+    public void moveUp() {
+        y-=step;
     }
 
     public void moveDown() {
-        previousY = y;
         y+=step;
     }
 
     public void moveLeft() {
-        previousX = x;
         x-=step;
     }
 
     public void moveRight() {
-        previousX = x;
         x+=step;
     }
 
@@ -60,12 +66,16 @@ public class Point {
 
     }
 
-    public int getPreviousX() {
-        return previousX;
+    public int getR() {
+        return r;
     }
 
-    public int getPreviousY() {
-        return previousY;
+    public int getG() {
+        return g;
+    }
+
+    public int getB() {
+        return b;
     }
 
     public int getX() {
@@ -78,7 +88,7 @@ public class Point {
 
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o instanceof Point) return false;
+        if (!(o instanceof Point)) return false;
         Point that = (Point) o;
         return that.x == this.x && that.y == this.y;
     }

@@ -10,7 +10,7 @@ import java.util.Set;
 public class SnakeMouseListener implements MouseListener, DirectionSubject {
 
     private final Set<DirectionObserver> observers = new HashSet<>();
-    private Direction currentDirection = Direction.LEFT;
+    private Direction currentDirection = Direction.RIGHT;
     @Override
     public void mouseClicked(MouseEvent mouseEvent) {
         switch (mouseEvent.getButton()) {

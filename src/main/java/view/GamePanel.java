@@ -1,18 +1,25 @@
 package view;
 
+import models.Character;
+import models.GreenFrog;
 import models.Point;
+import models.Snake;
 import util.direction.SnakeMouseListener;
 import util.draw.DrawObserver;
 
 import javax.swing.JPanel;
 import java.awt.*;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 public class GamePanel extends JPanel implements DrawObserver {
     private final int width, height, scale;
 //    private Point currentPoint;
     private Set<Point> activePoints = new HashSet<>();
+    private Set<Point> frogs = new HashSet<>();
+    private List<Point> snakeBody = new LinkedList<>();
     private boolean isNewGame = true;
     private Graphics2D g2d;
     public GamePanel(int width, int height, int scale) {
@@ -46,7 +53,9 @@ public class GamePanel extends JPanel implements DrawObserver {
 //        if (isNewGame) {
 //        if (currentPoint!= null) paintAct(g2d);
             paintDots();
-            activePoints.forEach(this::paintAct);
+//            activePoints.forEach(this::paintAct);
+            snakeBody.forEach(this::paintAct); // todo ConcurrentModificationException
+            frogs.forEach(this::paintAct);
 //            isNewGame = false;
 //        } else paintAct(g2d);
     }
@@ -76,18 +85,28 @@ public class GamePanel extends JPanel implements DrawObserver {
 
     private void paintAct(Point currentPoint) {
         g2d.setStroke(new BasicStroke(1.5f));
-        g2d.setColor(Color.black);
-//        g2d.fillOval(currentPoint.getPreviousX() + 2, currentPoint.getPreviousY() + 2, scale - 4, scale - 3);
-//        g2d.fillOval(subject.getPreviousX() + 4, subject.getPreviousY() + 2, scale - 4, scale - 3);
-        g2d.setColor(Color.red);
+        g2d.setColor(new Color(currentPoint.getR(), currentPoint.getG(), currentPoint.getB()));
         g2d.fillOval(currentPoint.getX() + 2, currentPoint.getY() + 2, scale - 4, scale - 3);
-//        g2d.fillOval(currentPoint.getX() + 4, currentPoint.getY() + 2, scale - 4, scale - 3);
     }
-
+// update snake update frog
     @Override
-    public synchronized void update(Set<Point> points) {
-        activePoints = points;
+    public synchronized void update(Character character) {
+        if (character instanceof Snake) {
+            snakeBody = ((Snake) character).getBody(); //todo update only snake
+        }
+        if (character instanceof GreenFrog) {
+            if (character.getPosition() != null)
+                frogs.add(character.getPosition()); //todo update only frogs
+            else frogs.remove(character.getPosition());
+        }
         repaint();
 //        paintImmediately(100, 100, 10, 10);
     }
+
+//
+//    public synchronized void update(Set<Point> points) {
+//        activePoints = points;
+//        repaint();
+////        paintImmediately(100, 100, 10, 10);
+//    }
 }

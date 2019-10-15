@@ -4,15 +4,15 @@ import models.contracts.Eatable;
 import models.contracts.Predator;
 import settings.SettingUtil;
 import util.direction.Direction;
-import util.direction.DirectionObserver;
 
-public class GreenFrog extends Frog implements DirectionObserver {
+public class Frog extends Character implements Eatable {
 
     protected long speed = SettingUtil.FROG_SPEED;
-    protected Direction direction = Direction.RIGHT;
+//    protected Direction direction = Direction.RIGHT;
 
-    public GreenFrog(Point position) {
-        super(position);
+    public Frog(Point position) {
+        this.position = position;
+        notifyDrawObservers();
     }
 
     public Point getPosition() {
@@ -35,13 +35,6 @@ public class GreenFrog extends Frog implements DirectionObserver {
     @Override
     public void effect(Predator predator) {
         isAlive = false;
-        this.position = null;
         predator.growth(this.position);
-        notifyDrawObservers();
-    }
-
-    @Override
-    public void update(Direction direction) {
-        this.direction = direction;
     }
 }

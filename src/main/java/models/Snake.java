@@ -5,6 +5,7 @@ import models.contracts.Predator;
 import settings.SettingUtil;
 import util.direction.Direction;
 import util.direction.DirectionObserver;
+import util.draw.DrawSubject;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -14,16 +15,16 @@ import java.util.List;
 public class Snake extends Character implements Predator, DirectionObserver {
 
     private List<Point> body;
+    private int[] color = new int[] {255, 255, 0};
     protected long speed = SettingUtil.SNAKE_SPEED;
-    protected Direction direction = Direction.RIGHT;
+//    protected Direction direction = Direction.RIGHT;
 
     public Snake(int size) {
         body = new LinkedList<>();
         while (body.size() < size) {
-            System.out.println("add point to body");
-            body.add(new Point(SettingUtil.SCALE, body.size() * SettingUtil.SCALE));
+            body.add(new Point(SettingUtil.SCALE, body.size() * SettingUtil.SCALE, color));
         }
-        System.out.println(this.body.size());
+        notifyDrawObservers();
     }
 //    @Override
 //    protected void spawn() {
@@ -34,7 +35,7 @@ public class Snake extends Character implements Predator, DirectionObserver {
     public void move() {
         System.out.println("snake moves!");
         Point last = body.get(body.size() - 1);
-        position = new Point(last.getX(), last.getY());
+        position = new Point(last.getX(), last.getY(), color);
         position.moveToDirection(direction);
         body.add(position);
         lastPosition = body.get(0);
@@ -42,6 +43,7 @@ public class Snake extends Character implements Predator, DirectionObserver {
             body.remove(0);
         }
         notifyObservers();
+        notifyDrawObservers();
     }
 
     public List<Point> getBody() {
@@ -60,7 +62,12 @@ public class Snake extends Character implements Predator, DirectionObserver {
 
     @Override
     public void growth(Point point) {
-        //
+        Point last = body.get(body.size() - 1);
+        position = new Point(last.getX(), last.getY(), color);
+        position.moveToDirection(direction);
+        body.add(position);
+        notifyObservers();
+        notifyDrawObservers();
     }
 
     @Override

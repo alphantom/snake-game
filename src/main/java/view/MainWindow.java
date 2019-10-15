@@ -1,19 +1,20 @@
 package view;
 
-import models.Field;
-import models.GreenFrog;
-import models.Point;
-import models.Snake;
+import controllers.Controller;
+import controllers.GameController;
 import settings.SettingUtil;
+import util.direction.KeyListener;
 import util.direction.SnakeMouseListener;
+import util.draw.DrawObserver;
 
 import javax.swing.*;
-import java.awt.*;
 
-public class MainWindow extends JFrame {
+public class MainWindow extends JFrame implements View {
 
+    Controller controller;
     private GamePanel gamePanel;
     private SnakeMouseListener mouseListener = new SnakeMouseListener();
+    private KeyListener keyListener = new KeyListener();
 
     public MainWindow() {
         super("Snake Game");
@@ -23,12 +24,25 @@ public class MainWindow extends JFrame {
         gamePanel = new GamePanel(SettingUtil.WIDTH, SettingUtil.HEIGHT, SettingUtil.SCALE);
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(gamePanel);
         gamePanel.setLayout(layout);
-        gamePanel.addMouseListener(mouseListener);
+//        gamePanel.addMouseListener(mouseListener);
+        gamePanel.addKeyListener(keyListener);
+        gamePanel.setFocusable(true);
+        gamePanel.requestFocusInWindow();
         this.add(gamePanel);
 
+        controller = new GameController(this, keyListener);
+        controller.startGame();
 
-        Field field = new Field(mouseListener);
-        field.registerDrawObserver(gamePanel);
+    }
 
+
+    @Override
+    public DrawObserver getDrawPanel() {
+        return gamePanel;
+    }
+
+    @Override
+    public void launch() {
+        setVisible(true);
     }
 }
