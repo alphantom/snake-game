@@ -33,7 +33,7 @@ public class Point {
     }
     public void moveUp() {
         y-=step;
-        if (y < 0) {
+        if (y < step) {
             y = SettingUtil.MAX_Y * step - step;
         }
     }
@@ -41,7 +41,7 @@ public class Point {
     public void moveDown() {
         y+=step;
         if (y > SettingUtil.MAX_Y * step  - step) {
-            y = 0;
+            y = step;
         }
     }
 

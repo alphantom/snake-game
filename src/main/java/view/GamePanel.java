@@ -14,10 +14,8 @@ import java.util.Set;
 
 public class GamePanel extends JPanel implements DrawObserver {
     private final int width, height, scale;
-    private Set<Point> activePoints = new HashSet<>();
     private Set<Frog> frogs = new HashSet<>();
     private List<Point> snakeBody = new LinkedList<>();
-    private boolean isNewGame = true;
     private Graphics2D g2d;
 
     private GameStatus statusPanel;
@@ -102,7 +100,7 @@ public class GamePanel extends JPanel implements DrawObserver {
                 frogs.remove(character);
             }
         }
-        repaint(); // todo repaint concrete place
+        repaint(200, 200, 10, 10); // todo repaint concrete place
 //        paintImmediately(100, 100, 10, 10);
     }
 
@@ -110,10 +108,4 @@ public class GamePanel extends JPanel implements DrawObserver {
         this.statusPanel = statusPanel;
     }
 
-    //
-//    public synchronized void update(Set<Point> points) {
-//        activePoints = points;
-//        repaint();
-////        paintImmediately(100, 100, 10, 10);
-//    }
 }

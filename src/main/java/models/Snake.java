@@ -29,16 +29,11 @@ public class Snake extends Character implements Movable, Predator, DirectionObse
 
     @Override
     public void move() {
-        body.forEach(sn -> System.out.println("start " + sn.getX() + " " + sn.getY()));
         Point point = body.getLast();
-        System.out.println("last one " + point.getX() + " " + point.getY());
         position = new Point(point.getX(), point.getY(), color);
         position.moveToDirection(direction);
         body.add(position);
-        System.out.println("new one " + position.getX() + " " + position.getY());
-//        lastPosition = body.get(0);
         body.removeFirst();
-        body.forEach(sn -> System.out.println("end " + sn.getX() + " " + sn.getY()));
         notifyObservers();
         notifyDrawObservers();
     }

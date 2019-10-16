@@ -17,6 +17,7 @@ public abstract class Character implements Runnable, Movable, DrawSubject {
 
     protected Point position;
     protected Point lastPosition;
+    protected boolean stopped = false;
 
     protected Set<MovableObserver> observers = new HashSet<>();
     protected Set<DrawObserver> drawObservers = new HashSet<>();
@@ -33,7 +34,6 @@ public abstract class Character implements Runnable, Movable, DrawSubject {
 
     @Override
     public void notifyObservers() {
-        System.out.println("Notify MOVEEE");
         observers.forEach(MovableObserver::update);
     }
 
@@ -52,11 +52,14 @@ public abstract class Character implements Runnable, Movable, DrawSubject {
     @Override
     public void run() {
         while(isAlive) {
-            move();
-            try {
-                Thread.sleep(getSpeed());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            synchronized (this) {
+                try {
+                    if (stopped) wait();
+                    move();
+                    Thread.sleep(getSpeed());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -84,9 +87,17 @@ public abstract class Character implements Runnable, Movable, DrawSubject {
     public long getSpeed() {
         return speed;
     }
-//    protected abstract void spawn();
 
     public void die() {
         isAlive = false;
+    }
+
+    public void stop() {
+        stopped = true;
+    }
+
+    public synchronized void resume() {
+        stopped = false;
+        notifyAll();
     }
 }

@@ -9,6 +9,7 @@ import util.draw.DrawObserver;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 public class MainWindow extends JFrame implements View {
 
@@ -29,7 +30,7 @@ public class MainWindow extends JFrame implements View {
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(width, height);
-        addKeyListener(keyListener);
+//        addKeyListener(keyListener);
         setJMenuBar(new MenuPanel(controller));
         content = new JPanel();
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
@@ -40,14 +41,29 @@ public class MainWindow extends JFrame implements View {
         statusPanel = new StatusPanel(width, 30, scale);
 
         gamePanel.setStatusPanel(statusPanel);
+        gamePanel.addKeyListener(keyListener);
+        gamePanel.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "pause");
+        gamePanel.getActionMap().put("pause", pauseAct());
+        gamePanel.setFocusable(true);
+        gamePanel.requestFocus();
 
         content.add(statusPanel);
         content.add(gamePanel);
 
-        this.add(content);
+        add(content);
+
         pack();
     }
 
+    private AbstractAction pauseAct() {
+        return new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                System.out.println("paused");
+                controller.pause();
+            }
+        };
+    }
 
     @Override
     public DrawObserver getDrawPanel() {
