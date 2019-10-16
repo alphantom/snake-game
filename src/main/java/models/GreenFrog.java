@@ -1,6 +1,5 @@
 package models;
 
-import models.contracts.Eatable;
 import models.contracts.Predator;
 import settings.SettingUtil;
 import util.direction.Direction;
@@ -23,7 +22,6 @@ public class GreenFrog extends Frog implements DirectionObserver {
     public void move() {
         lastPosition = position;
         this.position.moveToDirection(direction);
-//        notifyObservers();
         notifyDrawObservers();
     }
 
@@ -34,9 +32,9 @@ public class GreenFrog extends Frog implements DirectionObserver {
 
     @Override
     public void effect(Predator predator) {
-        isAlive = false;
-        this.position = null;
+        super.effect(predator);
         predator.growth(this.position);
+        predator.addXp(1);
         notifyDrawObservers();
     }
 

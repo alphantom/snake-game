@@ -1,10 +1,8 @@
 package view;
 
+import models.*;
 import models.Character;
-import models.GreenFrog;
 import models.Point;
-import models.Snake;
-import util.direction.SnakeMouseListener;
 import util.draw.DrawObserver;
 
 import javax.swing.JPanel;
@@ -16,12 +14,15 @@ import java.util.Set;
 
 public class GamePanel extends JPanel implements DrawObserver {
     private final int width, height, scale;
-//    private Point currentPoint;
     private Set<Point> activePoints = new HashSet<>();
-    private Set<Point> frogs = new HashSet<>();
+    private Set<Frog> frogs = new HashSet<>();
     private List<Point> snakeBody = new LinkedList<>();
     private boolean isNewGame = true;
     private Graphics2D g2d;
+
+    private GameStatus statusPanel;
+
+//    private Status
     public GamePanel(int width, int height, int scale) {
         this.width = width;
         this.height = height;
@@ -55,7 +56,7 @@ public class GamePanel extends JPanel implements DrawObserver {
             paintDots();
 //            activePoints.forEach(this::paintAct);
             snakeBody.forEach(this::paintAct); // todo ConcurrentModificationException
-            frogs.forEach(this::paintAct);
+            frogs.forEach(frog -> paintAct(frog.getPosition()));
 //            isNewGame = false;
 //        } else paintAct(g2d);
     }
@@ -93,17 +94,23 @@ public class GamePanel extends JPanel implements DrawObserver {
     public synchronized void update(Character character) {
         if (character instanceof Snake) {
             snakeBody = ((Snake) character).getBody(); //todo update only snake
-        }
-        if (character instanceof GreenFrog) {
+            statusPanel.setScore(((Snake) character).getXp());
+        } else if (character instanceof Frog) {
             if (character.getPosition() != null)
-                frogs.add(character.getPosition()); //todo update only frogs
-            else frogs.remove(character.getPosition());
+                frogs.add((Frog)character); //todo update only frogs
+            else {
+                frogs.remove(character);
+            }
         }
-        repaint();
+        repaint(); // todo repaint concrete place
 //        paintImmediately(100, 100, 10, 10);
     }
 
-//
+    public void setStatusPanel(GameStatus statusPanel) {
+        this.statusPanel = statusPanel;
+    }
+
+    //
 //    public synchronized void update(Set<Point> points) {
 //        activePoints = points;
 //        repaint();

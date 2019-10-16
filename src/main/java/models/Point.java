@@ -2,11 +2,6 @@ package models;
 
 import settings.SettingUtil;
 import util.direction.Direction;
-import util.draw.DrawObserver;
-import util.draw.DrawSubject;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class Point {
 
@@ -38,18 +33,30 @@ public class Point {
     }
     public void moveUp() {
         y-=step;
+        if (y < step) {
+            y = SettingUtil.MAX_Y * step;
+        }
     }
 
     public void moveDown() {
         y+=step;
+        if (y > SettingUtil.MAX_Y * step) {
+            y = step;
+        }
     }
 
     public void moveLeft() {
         x-=step;
+        if (x < step) {
+            x = SettingUtil.MAX_X * step;
+        }
     }
 
     public void moveRight() {
         x+=step;
+        if (x > SettingUtil.MAX_X * step) {
+            x = step;
+        }
     }
 
     public void moveToDirection(Direction direction) {
@@ -61,6 +68,9 @@ public class Point {
             case LEFT: this.moveLeft();
                 break;
             case RIGHT: this.moveRight();
+                break;
+            default:
+                System.out.println("no direction");
                 break;
         }
 

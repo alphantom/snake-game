@@ -49,7 +49,6 @@ public abstract class Character implements Runnable, Movable, DrawSubject {
         drawObservers.forEach(item -> item.update(this));
     }
 
-
     @Override
     public void run() {
         while(isAlive) {
@@ -62,14 +61,13 @@ public abstract class Character implements Runnable, Movable, DrawSubject {
         }
     }
 
-//    public Direction getDirection() {
-//        return direction;
-//    }
-//
-//    public void setDirection(Direction direction) {
-//        this.direction = direction;
-//    }
+    public Direction getDirection() {
+        return direction;
+    }
 
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
 
     public Point getPosition() {
         return position;

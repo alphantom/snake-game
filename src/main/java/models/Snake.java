@@ -1,47 +1,44 @@
 package models;
 
 import models.contracts.Eatable;
+import models.contracts.Movable;
+import models.contracts.MovableObserver;
 import models.contracts.Predator;
 import settings.SettingUtil;
 import util.direction.Direction;
 import util.direction.DirectionObserver;
 import util.draw.DrawSubject;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-public class Snake extends Character implements Predator, DirectionObserver {
+public class Snake extends Character implements Movable, Predator, DirectionObserver {
 
-    private List<Point> body;
+    private volatile LinkedList<Point> body;
     private int[] color = new int[] {255, 255, 0};
     protected long speed = SettingUtil.SNAKE_SPEED;
-//    protected Direction direction = Direction.RIGHT;
+
+    private int experience;
 
     public Snake(int size) {
         body = new LinkedList<>();
         while (body.size() < size) {
-            body.add(new Point(SettingUtil.SCALE, body.size() * SettingUtil.SCALE, color));
+            body.add(new Point((1 + body.size()) * SettingUtil.SCALE, SettingUtil.SCALE, color));
         }
         notifyDrawObservers();
     }
-//    @Override
-//    protected void spawn() {
-//        this.body = new ArrayDeque<>(); //todo
-//    }
 
     @Override
     public void move() {
-        System.out.println("snake moves!");
-        Point last = body.get(body.size() - 1);
-        position = new Point(last.getX(), last.getY(), color);
+        body.forEach(sn -> System.out.println("start " + sn.getX() + " " + sn.getY()));
+        Point point = body.getLast();
+        System.out.println("last one " + point.getX() + " " + point.getY());
+        position = new Point(point.getX(), point.getY(), color);
         position.moveToDirection(direction);
         body.add(position);
-        lastPosition = body.get(0);
-        if (true) {
-            body.remove(0);
-        }
+        System.out.println("new one " + position.getX() + " " + position.getY());
+//        lastPosition = body.get(0);
+        body.removeFirst();
+        body.forEach(sn -> System.out.println("end " + sn.getX() + " " + sn.getY()));
         notifyObservers();
         notifyDrawObservers();
     }
@@ -61,6 +58,11 @@ public class Snake extends Character implements Predator, DirectionObserver {
     }
 
     @Override
+    public void addXp(int xp) {
+        experience += xp;
+    }
+
+    @Override
     public void growth(Point point) {
         Point last = body.get(body.size() - 1);
         position = new Point(last.getX(), last.getY(), color);
@@ -70,9 +72,13 @@ public class Snake extends Character implements Predator, DirectionObserver {
         notifyDrawObservers();
     }
 
+    public Point getPosition() {
+        return body.getLast();
+    }
+
     @Override
     public void getDamage() {
-        body.remove(0);
+        body.removeLast();
     }
 
     @Override
@@ -80,4 +86,7 @@ public class Snake extends Character implements Predator, DirectionObserver {
         this.direction = direction;
     }
 
+    public int getXp() {
+        return experience;
+    }
 }

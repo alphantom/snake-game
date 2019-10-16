@@ -35,6 +35,19 @@ public class Frog extends Character implements Eatable {
     @Override
     public void effect(Predator predator) {
         isAlive = false;
-        predator.growth(this.position);
+        this.position = null;
+        notifyDrawObservers();
+//        predator.growth(this.position);
     }
+
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (!(o instanceof Frog)) return false;
+//        Frog that = (Frog) o;
+//
+//        return super.equals(o);
+//    }
+
+
 }

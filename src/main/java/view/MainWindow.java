@@ -8,11 +8,18 @@ import util.direction.SnakeMouseListener;
 import util.draw.DrawObserver;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class MainWindow extends JFrame implements View {
 
-    Controller controller;
+    private final int width = SettingUtil.WIDTH;
+    private final int height = SettingUtil.HEIGHT;
+    private final int scale = SettingUtil.SCALE;
+
+    private JPanel content;
+    private Controller controller;
     private GamePanel gamePanel;
+    private StatusPanel statusPanel;
     private SnakeMouseListener mouseListener = new SnakeMouseListener();
     private KeyListener keyListener = new KeyListener();
 
@@ -20,16 +27,29 @@ public class MainWindow extends JFrame implements View {
         super("Snake Game");
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(SettingUtil.WIDTH, SettingUtil.HEIGHT);
-        gamePanel = new GamePanel(SettingUtil.WIDTH, SettingUtil.HEIGHT, SettingUtil.SCALE);
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(gamePanel);
-        gamePanel.setLayout(layout);
-//        gamePanel.addMouseListener(mouseListener);
-        gamePanel.addKeyListener(keyListener);
-        gamePanel.setFocusable(true);
-        gamePanel.requestFocusInWindow();
-        this.add(gamePanel);
+        setSize(width, height);
 
+        content = new JPanel();
+        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
+        content.setBorder(BorderFactory.createEmptyBorder(scale, scale, scale, scale));
+        content.setBackground(Color.black);
+
+        gamePanel = new GamePanel(width, height - 30, scale);
+        statusPanel = new StatusPanel(width, 30, scale);
+
+//        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(gamePanel);
+//        gamePanel.setLayout(layout);
+//        gamePanel.addMouseListener(mouseListener);
+        addKeyListener(keyListener);
+//        gamePanel.setFocusable(true);
+//        gamePanel.requestFocusInWindow();
+        gamePanel.setStatusPanel(statusPanel);
+
+        content.add(statusPanel);
+        content.add(gamePanel);
+
+        this.add(content);
+        pack();
         controller = new GameController(this, keyListener);
         controller.startGame();
 

@@ -8,4 +8,6 @@ public interface Predator {
     void growth(Point point);
 
     void getDamage();
+
+    void addXp(int xp);
 }
