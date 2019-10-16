@@ -17,18 +17,20 @@ public class MainWindow extends JFrame implements View {
     private final int scale = SettingUtil.SCALE;
 
     private JPanel content;
-    private Controller controller;
-    private GamePanel gamePanel;
-    private StatusPanel statusPanel;
-    private SnakeMouseListener mouseListener = new SnakeMouseListener();
+    private final Controller controller;
+    private final GamePanel gamePanel;
+    private final StatusPanel statusPanel;
+    private final SnakeMouseListener mouseListener = new SnakeMouseListener();
     private KeyListener keyListener = new KeyListener();
 
     public MainWindow() {
         super("Snake Game");
+        controller = new GameController(this, keyListener);
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(width, height);
-
+        addKeyListener(keyListener);
+        setJMenuBar(new MenuPanel(controller));
         content = new JPanel();
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
         content.setBorder(BorderFactory.createEmptyBorder(scale, scale, scale, scale));
@@ -37,12 +39,6 @@ public class MainWindow extends JFrame implements View {
         gamePanel = new GamePanel(width, height - 30, scale);
         statusPanel = new StatusPanel(width, 30, scale);
 
-//        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(gamePanel);
-//        gamePanel.setLayout(layout);
-//        gamePanel.addMouseListener(mouseListener);
-        addKeyListener(keyListener);
-//        gamePanel.setFocusable(true);
-//        gamePanel.requestFocusInWindow();
         gamePanel.setStatusPanel(statusPanel);
 
         content.add(statusPanel);
@@ -50,9 +46,6 @@ public class MainWindow extends JFrame implements View {
 
         this.add(content);
         pack();
-        controller = new GameController(this, keyListener);
-        controller.startGame();
-
     }
 
 

@@ -5,7 +5,7 @@ import models.Character;
 import models.Point;
 import util.draw.DrawObserver;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.awt.*;
 import java.util.HashSet;
 import java.util.LinkedList;

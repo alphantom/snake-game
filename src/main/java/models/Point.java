@@ -33,29 +33,29 @@ public class Point {
     }
     public void moveUp() {
         y-=step;
-        if (y < step) {
-            y = SettingUtil.MAX_Y * step;
+        if (y < 0) {
+            y = SettingUtil.MAX_Y * step - step;
         }
     }
 
     public void moveDown() {
         y+=step;
-        if (y > SettingUtil.MAX_Y * step) {
-            y = step;
+        if (y > SettingUtil.MAX_Y * step  - step) {
+            y = 0;
         }
     }
 
     public void moveLeft() {
         x-=step;
-        if (x < step) {
-            x = SettingUtil.MAX_X * step;
+        if (x < 0) {
+            x = SettingUtil.MAX_X * step - step;
         }
     }
 
     public void moveRight() {
         x+=step;
-        if (x > SettingUtil.MAX_X * step) {
-            x = step;
+        if (x > SettingUtil.MAX_X * step - step) {
+            x = 0;
         }
     }
 
