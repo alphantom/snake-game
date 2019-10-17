@@ -22,7 +22,7 @@ public class MenuPanel extends JMenuBar {
         });
         game.add(exit);
         add(game);
-        add(createMenu("Settings", "Parameters", "Screen"));
+        add(createMenu("Settings", "Parameters", "Screen")); // todo
     }
 
     private static JMenu createMenu(String menuLabel, String... subMenuLabels) {

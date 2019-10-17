@@ -9,9 +9,9 @@ public class Point {
     private int y;
 
     // Color TODO encapsulate color
-    private int r;
-    private int g;
-    private int b;
+    private short r;
+    private short g;
+    private short b;
 
     private final int step = SettingUtil.SCALE;
 
@@ -23,7 +23,7 @@ public class Point {
         this.b = 0;
     }
 
-    public Point(int x, int y, int[] color) {
+    public Point(int x, int y, short[] color) {
         this.x = x;
         this.y = y;
         this.r = color[0];
@@ -96,6 +96,11 @@ public class Point {
         return y;
     }
 
+    public void setColor(short r, short g, short b) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+    }
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Point)) return false;

@@ -24,7 +24,7 @@ public class GameController implements Controller, MovableObserver {
     private final Random random = new Random();
 
     private volatile Snake snake;
-    private List<Frog> frogs = Collections.synchronizedList(new LinkedList<>());
+    private volatile List<Frog> frogs = new LinkedList<>();
 
     private boolean paused = false;
     private boolean gameStarted = false;
@@ -40,7 +40,10 @@ public class GameController implements Controller, MovableObserver {
 
     @Override
     public void startGame() {
-        if (gameStarted) cancel();
+        if (gameStarted) {
+            view.getDrawPanel().clear();
+            cancel();
+        }
         snake = new Snake(SettingUtil.SNAKE_LENGTH);
         snake.registerObserver(this);
         snake.registerDrawObserver(view.getDrawPanel());
@@ -76,12 +79,14 @@ public class GameController implements Controller, MovableObserver {
 
     @Override
     public void pause() {
-        if (paused) restore();
-        else {
-            snake.stop();
-            frogs.forEach(Character::stop);
+        if (gameStarted) {
+            if (paused) restore();
+            else {
+                snake.stop();
+                frogs.forEach(Character::stop);
+            }
+            paused = !paused;
         }
-        paused = !paused;
     }
 
     public void restore() {
@@ -92,28 +97,38 @@ public class GameController implements Controller, MovableObserver {
 
     @Override
     public void cancel() {
-        snake.die();
-        frogs.forEach(Character::die);
-        gameStarted = false;
+        if (gameStarted) {
+            snake.die();
+            frogs.forEach(Character::die);
+            frogs = new LinkedList<>(); // todo
+            gameStarted = false;
+        }
     }
 
     @Override
-    public synchronized void update() { // todo ???synchronized
+    public void update() { // todo ???synchronized
         if (Collections.frequency(snake.getBody(), snake.getPosition()) > 1) {
             snake.getBody().forEach(point -> System.out.println(point.getX() + " " + point.getY()));
             cancel();
             return;
         }
 
-        for (ListIterator<Frog> iterator = frogs.listIterator(); iterator.hasNext(); ) {
-            Frog frog = iterator.next();
-            if (snake.getPosition().equals(frog.getPosition())) {
-                snake.eat(frog);
-                iterator.remove();
-                spawnFrog();
-                break;
-            }
+        Optional<Frog> frogOpt = frogs.stream().filter(frog -> snake.getPosition().equals(frog.getPosition())).findFirst();
+        if (frogOpt.isPresent()) {
+            Frog frog = frogOpt.get();
+            frogs.remove(frog);
+            snake.eat(frog);
+            spawnFrog();
         }
+//        for (ListIterator<Frog> iterator = frogs.listIterator(); iterator.hasNext(); ) {
+//            Frog frog = iterator.next(); //todo ccmodex (like if snake eats several frogs)
+//            if (snake.getPosition().equals(frog.getPosition())) {
+//                snake.eat(frog);
+//                iterator.remove();
+//                spawnFrog();
+//                break;
+//            }
+//        }
     }
 
 }

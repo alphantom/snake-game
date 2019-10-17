@@ -7,4 +7,6 @@ import java.util.Set;
 
 public interface DrawObserver {
     void update(Character character);
+
+    void clear();
 }

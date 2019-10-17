@@ -35,7 +35,8 @@ public class Frog extends Character implements Eatable {
     @Override
     public void effect(Predator predator) {
         isAlive = false;
-        this.position = null;
+        position.setColor((short)255, (short)255, (short)255);
+//        this.position = null;
         notifyDrawObservers();
 //        predator.growth(this.position);
     }

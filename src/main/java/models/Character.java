@@ -100,4 +100,8 @@ public abstract class Character implements Runnable, Movable, DrawSubject {
         stopped = false;
         notifyAll();
     }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
 }

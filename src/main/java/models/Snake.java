@@ -14,7 +14,7 @@ import java.util.*;
 public class Snake extends Character implements Movable, Predator, DirectionObserver {
 
     private volatile LinkedList<Point> body;
-    private int[] color = new int[] {255, 255, 0};
+    private short[] color = new short[] {255, 255, 0};
     protected long speed = SettingUtil.SNAKE_SPEED;
 
     private int experience;
