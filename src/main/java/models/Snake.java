@@ -11,7 +11,7 @@ import util.draw.DrawSubject;
 
 import java.util.*;
 
-public class Snake extends Character implements Movable, Predator, DirectionObserver {
+public class Snake extends Character implements Predator, DirectionObserver {
 
     private volatile LinkedList<Point> body;
     private short[] color = new short[] {255, 255, 0};
@@ -24,7 +24,7 @@ public class Snake extends Character implements Movable, Predator, DirectionObse
         while (body.size() < size) {
             body.add(new Point((1 + body.size()) * SettingUtil.SCALE, SettingUtil.SCALE, color));
         }
-        notifyDrawObservers();
+        notifyObservers();
     }
 
     @Override
@@ -33,9 +33,9 @@ public class Snake extends Character implements Movable, Predator, DirectionObse
         position = new Point(point.getX(), point.getY(), color);
         position.moveToDirection(direction);
         body.add(position);
+        lastPosition = body.getFirst();
         body.removeFirst();
         notifyObservers();
-        notifyDrawObservers();
     }
 
     public List<Point> getBody() {
@@ -64,7 +64,7 @@ public class Snake extends Character implements Movable, Predator, DirectionObse
         position.moveToDirection(direction);
         body.add(position);
         notifyObservers();
-        notifyDrawObservers();
+        notifyObservers();
     }
 
     public Point getPosition() {
@@ -73,7 +73,13 @@ public class Snake extends Character implements Movable, Predator, DirectionObse
 
     @Override
     public void getDamage() {
-        body.removeLast();
+        if (body.size() > 3) body.removeFirst();
+    }
+
+    @Override
+    public void getKilled() {
+        super.die();
+        notifyObservers();
     }
 
     @Override

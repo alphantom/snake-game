@@ -12,12 +12,14 @@ import java.util.List;
 
 public class GamePanel extends JPanel implements DrawObserver {
     private final int width, height, scale;
-    private volatile Set<Frog> frogs = Collections.synchronizedSet(new HashSet<>());
-    private volatile List<Point> snakeBody = Collections.synchronizedList(new LinkedList<>());
+//    private volatile Set<Frog> frogs = Collections.synchronizedSet(new HashSet<>());
+//    private volatile List<Point> snakeBody = Collections.synchronizedList(new LinkedList<>());
 //    private Set<Point> activePoints = new HashSet<>();
     private Graphics2D g2d;
+//    private int[] changes;
+    private volatile Point[][] field;
 
-//    private boolean snakeRepaint = false;
+    private boolean snakeRepaint = false;
 
     private GameStatus statusPanel;
 
@@ -28,6 +30,7 @@ public class GamePanel extends JPanel implements DrawObserver {
         this.width = width;
         this.height = height;
         this.scale = scale;
+        field = new Point[height][width];
     }
 
     @Override
@@ -52,14 +55,12 @@ public class GamePanel extends JPanel implements DrawObserver {
         g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         paintDots();
-        snakeBody.forEach(this::paintAct); // todo ConcurrentModificationException
-        frogs.forEach(frog -> paintAct(frog.getPosition()));
+        Arrays.stream(field).flatMap(Arrays::stream).forEach(point -> {
+            if (null != point) paintAct(point);
+        });
+//        snakeBody.forEach(this::paintAct); // todo ConcurrentModificationException
+//        frogs.forEach(frog -> paintAct(frog.getPosition()));
     }
-
-//    @Override
-//    public void update(Graphics graphics) {
-//        paint(graphics);
-//    }
 
     public void paintDots() {
         g2d.setStroke(new BasicStroke(0.25f));
@@ -88,35 +89,59 @@ public class GamePanel extends JPanel implements DrawObserver {
     }
 // update snake update frog
     @Override
-    public void update(Character character) {
-        Rectangle place = null;
-//        synchronized (lockObject) {
-            if (character instanceof Snake) {
-//                snakeRepaint=true;
-                Snake snake = (Snake) character;
-                snakeBody = snake.getBody(); //todo update only snake
-    //            activePoints.addAll(snake.getBody());
-                statusPanel.setScore(snake.getXp());
-                place = getRedrawClip((Snake) character);
-            } else if (character instanceof Frog) {
-//                snakeRepaint=false;
-                if (character.isAlive()) {
-    //                activePoints.
-                    frogs.add((Frog) character); //todo update only frogs
-                } else {
-                    frogs.remove(character); // todo npex
-                }
-                place = getRedrawClip((Frog) character);
+    public void update(Point[][] grid, int minx, int maxx, int miny, int maxy) {
+        synchronized (field) {
+//            changes = new int[]{1,2};
+//            changes = grid;
+//            Point startPoint = null;
+snakeRepaint = true;
+//            Point[][] changes = new Point[maxy + 1][maxx + 1];
+            for (int i = miny, j = minx; i <= maxy; i++, j++) {
+                field[i] = Arrays.copyOfRange(grid[i], minx, maxx + 1);
+//            System.out.println("grid i " + Arrays.deepToString(grid[i]));
+//            System.out.println("copy grid i " + Arrays.deepToString(Arrays.copyOfRange(grid[i], minx, maxx + 1)));
             }
-//        }
-        repaint(place);
-//        paintImmediately(place);
+//
+//            for (int i = 0; i < grid[0].length; i++) {
+//                for (int j = 0; j < grid.length; j++) {
+//                    if (null != grid[j][i]) {
+//                        startPoint = grid[j][i];
+//                        break;
+//                    }
+//                }
+//                if (null != startPoint) break;
+//            }
+
+            Rectangle place = new Rectangle(minx * scale, miny * scale, (maxx - minx) * scale + scale , (maxy - miny) * scale + scale);
+//            if (character instanceof Snake) {
+////                snakeRepaint=true;
+//                Snake snake = (Snake) character;
+//                snakeBody = snake.getBody(); //todo update only snake
+//    //            activePoints.addAll(snake.getBody());
+//                statusPanel.setScore(snake.getXp());
+//                place = getRedrawClip((Snake) character);
+//            } else if (character instanceof Frog) {
+////                snakeRepaint=false;
+//                if (character.isAlive()) {
+//    //                activePoints.
+//                    frogs.add((Frog) character); //todo update only frogs
+//                } else {
+//                    frogs.remove(character); // todo npex
+//                }
+//                place = getRedrawClip((Frog) character);
+//            }
+////                    paintImmediately(place);
+////        }
+//        repaint(place);
+                    paintImmediately(place);
+//            repaint(place);
+        }
     }
 
     @Override
     public void clear() {
-        frogs = Collections.synchronizedSet(new HashSet<>());
-        snakeBody = new LinkedList<>();
+//        frogs = new HashSet<>();
+//        snakeBody = new LinkedList<>();
         repaint();
     }
 

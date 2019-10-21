@@ -35,7 +35,6 @@ public class GreenFrog extends Frog implements DirectionObserver {
         super.effect(predator);
         predator.growth(this.position);
         predator.addXp(1);
-        notifyDrawObservers();
     }
 
     @Override

@@ -3,10 +3,13 @@ package models;
 import settings.SettingUtil;
 import util.direction.Direction;
 
-public class Point {
+public class Point implements Cloneable {
 
     private int x;
     private int y;
+
+    private int scaledX;
+    private int scaledY;
 
     // Color TODO encapsulate color
     private short r;
@@ -18,7 +21,11 @@ public class Point {
     public Point(int x, int y) {
         this.x = x;
         this.y = y;
-        this.r = 0;
+
+        scaledX = x/step;
+        scaledY = y/step;
+
+        this.r = 0; // todo delete default color
         this.g = 204;
         this.b = 0;
     }
@@ -26,23 +33,42 @@ public class Point {
     public Point(int x, int y, short[] color) {
         this.x = x;
         this.y = y;
+
+        scaledX = x/step;
+        scaledY = y/step;
+
         this.r = color[0];
         this.g = color[1];
         this.b = color[2];
 
     }
+
+    public Point(Point point) {
+        x = point.x;
+        y = point.y;
+
+        scaledX = x/step;
+        scaledY = y/step;
+
+        r = point.r;
+        g = point.g;
+        b = point.b;
+    }
+
     public void moveUp() {
         y-=step;
-        if (y < step) {
+        if (y < 0) {
             y = SettingUtil.MAX_Y * step - step;
         }
+        scaledY = y/step;
     }
 
     public void moveDown() {
         y+=step;
         if (y > SettingUtil.MAX_Y * step  - step) {
-            y = step;
+            y = 0;
         }
+        scaledY = y/step;
     }
 
     public void moveLeft() {
@@ -50,6 +76,7 @@ public class Point {
         if (x < 0) {
             x = SettingUtil.MAX_X * step - step;
         }
+        scaledX = x/step;
     }
 
     public void moveRight() {
@@ -57,6 +84,7 @@ public class Point {
         if (x > SettingUtil.MAX_X * step - step) {
             x = 0;
         }
+        scaledX = x/step;
     }
 
     public void moveToDirection(Direction direction) {
@@ -94,6 +122,14 @@ public class Point {
 
     public int getY() {
         return y;
+    }
+
+    public int getScaledX() {
+        return scaledX;
+    }
+
+    public int getScaledY() {
+        return scaledY;
     }
 
     public void setColor(short r, short g, short b) {

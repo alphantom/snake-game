@@ -3,10 +3,10 @@ package util.draw;
 import models.Character;
 import models.Point;
 
-import java.util.Set;
-
 public interface DrawObserver {
-    void update(Character character);
+//    void update(Character character);
 
     void clear();
+
+    void update(Point[][] changes, int minx, int maxx, int miny, int maxy);
 }

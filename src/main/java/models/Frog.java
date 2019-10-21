@@ -12,7 +12,7 @@ public class Frog extends Character implements Eatable {
 
     public Frog(Point position) {
         this.position = position;
-        notifyDrawObservers();
+        notifyObservers();
     }
 
     public Point getPosition() {
@@ -21,10 +21,10 @@ public class Frog extends Character implements Eatable {
 
     @Override
     public void move() {
-        lastPosition = position;
+        lastPosition = new Point(position);
         this.position.moveToDirection(direction);
 //        notifyObservers();
-        notifyDrawObservers();
+        notifyObservers();
     }
 
     @Override
@@ -36,8 +36,7 @@ public class Frog extends Character implements Eatable {
     public void effect(Predator predator) {
         isAlive = false;
         position.setColor((short)255, (short)255, (short)255);
-//        this.position = null;
-        notifyDrawObservers();
+        notifyObservers();
 //        predator.growth(this.position);
     }
 

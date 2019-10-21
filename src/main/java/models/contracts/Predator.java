@@ -10,4 +10,6 @@ public interface Predator {
     void getDamage();
 
     void addXp(int xp);
+
+    void getKilled();
 }

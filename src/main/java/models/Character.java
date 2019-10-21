@@ -9,7 +9,7 @@ import util.draw.DrawSubject;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class Character implements Runnable, Movable, DrawSubject {
+public abstract class Character implements Runnable, Movable {
 
     protected volatile Direction direction = Direction.RIGHT;
     protected long speed;
@@ -20,7 +20,7 @@ public abstract class Character implements Runnable, Movable, DrawSubject {
     protected boolean stopped = false;
 
     protected Set<MovableObserver> observers = new HashSet<>();
-    protected Set<DrawObserver> drawObservers = new HashSet<>();
+//    protected Set<DrawObserver> drawObservers = new HashSet<>();
 
     @Override
     public void registerObserver(MovableObserver observer) {
@@ -34,20 +34,20 @@ public abstract class Character implements Runnable, Movable, DrawSubject {
 
     @Override
     public void notifyObservers() {
-        observers.forEach(MovableObserver::update);
+        observers.forEach(obs -> obs.update(this));
     }
 
-    public void registerDrawObserver(DrawObserver observer) {
-        drawObservers.add(observer);
-    }
-
-    public void removeDrawObserver(DrawObserver observer) {
-        drawObservers.remove(observer);
-    }
-
-    public void notifyDrawObservers(){
-        drawObservers.forEach(item -> item.update(this));
-    }
+//    public void registerDrawObserver(DrawObserver observer) {
+//        drawObservers.add(observer);
+//    }
+//
+//    public void removeDrawObserver(DrawObserver observer) {
+//        drawObservers.remove(observer);
+//    }
+//
+//    public void notifyDrawObservers(){
+//        drawObservers.forEach(item -> item.update(this));
+//    }
 
     @Override
     public void run() {
@@ -86,6 +86,10 @@ public abstract class Character implements Runnable, Movable, DrawSubject {
 
     public long getSpeed() {
         return speed;
+    }
+
+    public Point getLastPosition() {
+        return lastPosition;
     }
 
     public void die() {

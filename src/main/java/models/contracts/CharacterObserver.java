@@ -1,9 +1,8 @@
 package models.contracts;
 
 import models.Character;
-import models.Point;
 
-public interface MovableObserver {
+public interface CharacterObserver {
+
     void update(Character character);
-//    void update(Movable movable);
 }

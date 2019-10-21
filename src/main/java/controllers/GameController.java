@@ -1,13 +1,12 @@
 package controllers;
 
+import models.*;
 import models.Character;
-import models.Frog;
-import models.GreenFrog;
-import models.Point;
-import models.Snake;
 import models.contracts.MovableObserver;
 import settings.SettingUtil;
+import util.FrogFactory;
 import util.direction.Direction;
+import util.direction.DirectionObserver;
 import util.direction.DirectionSubject;
 import view.View;
 
@@ -32,6 +31,7 @@ public class GameController implements Controller, MovableObserver {
     private DirectionSubject directionManager;
 
     private View view;
+    private Field field;
 
     public GameController(View view, DirectionSubject subject) {
         this.view = view;
@@ -44,9 +44,12 @@ public class GameController implements Controller, MovableObserver {
             view.getDrawPanel().clear();
             cancel();
         }
+        field = new Field();
         snake = new Snake(SettingUtil.SNAKE_LENGTH);
         snake.registerObserver(this);
-        snake.registerDrawObserver(view.getDrawPanel());
+        snake.registerObserver(field);
+        field.registerDrawObserver(view.getDrawPanel());
+//        snake.registerDrawObserver(view.getDrawPanel());
         directionManager.registerObserver(snake);
         Thread snakeThread = new Thread(snake);
         snakeThread.start();
@@ -57,12 +60,13 @@ public class GameController implements Controller, MovableObserver {
 
     public void spawnFrog() {
         while (frogs.size() < SettingUtil.FROG_COUNT) {
-            GreenFrog frog = new GreenFrog(findEmptyPoint());
+            Frog frog = FrogFactory.createFrog(findEmptyPoint());
             frog.setDirection(snake.getDirection());
-            frog.registerObserver(this);
-            frog.registerDrawObserver(view.getDrawPanel());
+            frog.registerObserver(field);
+//            frog.registerDrawObserver(view.getDrawPanel());
             frogs.add(frog);
-            directionManager.registerObserver(frog);
+            if (frog instanceof DirectionObserver) // todo
+                directionManager.registerObserver((DirectionObserver) frog);
             Thread frogThread = new Thread(frog);
             frogThread.start();
         }
@@ -106,28 +110,22 @@ public class GameController implements Controller, MovableObserver {
     }
 
     @Override
-    public void update() { // todo ???synchronized
-        if (Collections.frequency(snake.getBody(), snake.getPosition()) > 1) {
-            snake.getBody().forEach(point -> System.out.println(point.getX() + " " + point.getY()));
-            cancel();
-            return;
-        }
+    public void update(Character character) { // todo ???synchronized
+//        if (character instanceof Snake) {
+            if (Collections.frequency(snake.getBody(), snake.getPosition()) > 1) {
+                cancel();
+                return;
+            }
 
-        Optional<Frog> frogOpt = frogs.stream().filter(frog -> snake.getPosition().equals(frog.getPosition())).findFirst();
-        if (frogOpt.isPresent()) {
-            Frog frog = frogOpt.get();
-            frogs.remove(frog);
-            snake.eat(frog);
-            spawnFrog();
-        }
-//        for (ListIterator<Frog> iterator = frogs.listIterator(); iterator.hasNext(); ) {
-//            Frog frog = iterator.next(); //todo ccmodex (like if snake eats several frogs)
-//            if (snake.getPosition().equals(frog.getPosition())) {
-//                snake.eat(frog);
-//                iterator.remove();
-//                spawnFrog();
-//                break;
-//            }
+            Optional<Frog> frogOpt = frogs.stream().filter(frog -> snake.getPosition().equals(frog.getPosition())).findFirst();
+            if (frogOpt.isPresent()) {
+                Frog frog = frogOpt.get();
+                frogs.remove(frog);
+                snake.eat(frog);
+                if (snake.isAlive())
+                    spawnFrog();
+                else cancel();
+            }
 //        }
     }
 
