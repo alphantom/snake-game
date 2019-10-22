@@ -16,7 +16,7 @@ public abstract class FrogFactory {
         switch (randomType()) {
             case GREEN: return new GreenFrog(position);
             case BLUE: return new BlueFrog(position);
-            case RED: return new RedFrog(position);
+            case RED: return new GreenFrog(position);
             default:
                 System.out.println("There are no frogs for this type ???");
                 return null;

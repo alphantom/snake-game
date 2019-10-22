@@ -2,7 +2,6 @@ package controllers;
 
 import models.*;
 import models.Character;
-import models.contracts.MovableObserver;
 import settings.SettingUtil;
 import util.FrogFactory;
 import util.direction.Direction;
@@ -18,7 +17,7 @@ import static settings.SettingUtil.SCALE;
 /**
  * This is the controller, which determines and handles game threads
  */
-public class GameController implements Controller, MovableObserver {
+public class GameController implements Controller {
 
     private final Random random = new Random();
 
@@ -44,12 +43,10 @@ public class GameController implements Controller, MovableObserver {
             view.getDrawPanel().clear();
             cancel();
         }
-        field = new Field();
-        snake = new Snake(SettingUtil.SNAKE_LENGTH);
-        snake.registerObserver(this);
-        snake.registerObserver(field);
+        field = new Field(this);
         field.registerDrawObserver(view.getDrawPanel());
-//        snake.registerDrawObserver(view.getDrawPanel());
+        snake = new Snake(SettingUtil.SNAKE_LENGTH);
+        snake.registerObserver(field);
         directionManager.registerObserver(snake);
         Thread snakeThread = new Thread(snake);
         snakeThread.start();
@@ -60,12 +57,17 @@ public class GameController implements Controller, MovableObserver {
 
     public void spawnFrog() {
         while (frogs.size() < SettingUtil.FROG_COUNT) {
-            Frog frog = FrogFactory.createFrog(findEmptyPoint());
+            Frog frog;
+            if (frogs.size() - SettingUtil.FROG_COUNT == 2) {
+                frog = new RedFrog(findEmptyPoint());
+            } else {
+                frog = FrogFactory.createFrog(findEmptyPoint());
+            }
             frog.setDirection(snake.getDirection());
             frog.registerObserver(field);
-//            frog.registerDrawObserver(view.getDrawPanel());
+            frog.setField(field);
             frogs.add(frog);
-            if (frog instanceof DirectionObserver) // todo
+            if (frog instanceof DirectionObserver)
                 directionManager.registerObserver((DirectionObserver) frog);
             Thread frogThread = new Thread(frog);
             frogThread.start();
@@ -109,9 +111,7 @@ public class GameController implements Controller, MovableObserver {
         }
     }
 
-    @Override
-    public void update(Character character) { // todo ???synchronized
-//        if (character instanceof Snake) {
+    public void check() {
             if (Collections.frequency(snake.getBody(), snake.getPosition()) > 1) {
                 cancel();
                 return;
@@ -122,11 +122,12 @@ public class GameController implements Controller, MovableObserver {
                 Frog frog = frogOpt.get();
                 frogs.remove(frog);
                 snake.eat(frog);
-                if (snake.isAlive())
+                if (snake.isAlive()) {
+                    view.getStatusPanel().setScore(snake.getXp());
                     spawnFrog();
+                }
                 else cancel();
             }
-//        }
     }
 
 }

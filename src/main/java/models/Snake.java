@@ -21,20 +21,23 @@ public class Snake extends Character implements Predator, DirectionObserver {
 
     public Snake(int size) {
         body = new LinkedList<>();
-        while (body.size() < size) {
-            body.add(new Point((1 + body.size()) * SettingUtil.SCALE, SettingUtil.SCALE, color));
-        }
+
+        body.add(new Point((1 + body.size()) * SettingUtil.SCALE, SettingUtil.SCALE, color, 0.8f));
+        body.add(new Point((1 + body.size()) * SettingUtil.SCALE, SettingUtil.SCALE, color));
+        body.add(new Point((1 + body.size()) * SettingUtil.SCALE, SettingUtil.SCALE, color, 1.1f));
         notifyObservers();
     }
 
     @Override
     public void move() {
         Point point = body.getLast();
-        position = new Point(point.getX(), point.getY(), color);
+        position = new Point(point);
         position.moveToDirection(direction);
         body.add(position);
+        point.resetDiameter();
         lastPosition = body.getFirst();
         body.removeFirst();
+        body.getFirst().diameterMultiplier(0.8f);
         notifyObservers();
     }
 
@@ -60,10 +63,10 @@ public class Snake extends Character implements Predator, DirectionObserver {
     @Override
     public void growth(Point point) {
         Point last = body.get(body.size() - 1);
-        position = new Point(last.getX(), last.getY(), color);
+        position = new Point(last);
         position.moveToDirection(direction);
         body.add(position);
-        notifyObservers();
+        last.resetDiameter();
         notifyObservers();
     }
 
@@ -73,7 +76,11 @@ public class Snake extends Character implements Predator, DirectionObserver {
 
     @Override
     public void getDamage() {
-        if (body.size() > 3) body.removeFirst();
+        if (body.size() > 3) {
+            lastPosition = body.getFirst();
+            body.removeFirst();
+            notifyObservers();
+        }
     }
 
     @Override

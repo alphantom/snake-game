@@ -15,7 +15,11 @@ public class MainWindow extends JFrame implements View {
 
     private final int width = SettingUtil.WIDTH;
     private final int height = SettingUtil.HEIGHT;
+    private final int fieldWidth = SettingUtil.FIELD_WIDTH;
+    private final int fieldHeight = SettingUtil.FIELD_HEIGHT;
     private final int scale = SettingUtil.SCALE;
+
+//    private
 
     private JPanel content;
     private final Controller controller;
@@ -37,10 +41,9 @@ public class MainWindow extends JFrame implements View {
         content.setBorder(BorderFactory.createEmptyBorder(scale, scale, scale, scale));
         content.setBackground(Color.black);
 
-        gamePanel = new GamePanel(width, height - 30, scale);
-        statusPanel = new StatusPanel(width, 30, scale);
+        gamePanel = new GamePanel(fieldWidth, fieldHeight, scale);
+        statusPanel = new StatusPanel(fieldWidth, height - fieldHeight, scale);
 
-        gamePanel.setStatusPanel(statusPanel);
         gamePanel.addKeyListener(keyListener);
         gamePanel.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "pause");
         gamePanel.getActionMap().put("pause", pauseAct());
@@ -68,6 +71,11 @@ public class MainWindow extends JFrame implements View {
     @Override
     public DrawObserver getDrawPanel() {
         return gamePanel;
+    }
+
+    @Override
+    public StatusPanel getStatusPanel() {
+        return statusPanel;
     }
 
     @Override

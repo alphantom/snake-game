@@ -18,25 +18,21 @@ public class KeyListener implements java.awt.event.KeyListener, DirectionSubject
     public void keyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getKeyCode()) {
             case KeyEvent.VK_UP:
-                System.out.println("Click up");
                 if (direction != Direction.DOWN) {
                     direction = Direction.UP;
                 }
                 break;
             case KeyEvent.VK_DOWN:
-                System.out.println("Click down");
                 if (direction != Direction.UP) {
                     direction = Direction.DOWN;
                 }
                 break;
             case KeyEvent.VK_LEFT:
-                System.out.println("Click left");
                 if (direction != Direction.RIGHT) {
                     direction = Direction.LEFT;
                 }
                 break;
             case KeyEvent.VK_RIGHT:
-                System.out.println("Click right");
                 if (direction != Direction.LEFT) {
                     direction = Direction.RIGHT;
                 }

@@ -16,8 +16,6 @@ public class GamePanel extends JPanel implements DrawObserver {
     private Graphics2D g2d;
     private Point[][] field;
 
-    private GameStatus statusPanel;
-
     public GamePanel(int width, int height, int scale) {
         this.width = width;
         this.height = height;
@@ -85,7 +83,7 @@ public class GamePanel extends JPanel implements DrawObserver {
                 field[i] = Arrays.copyOfRange(grid[i], minx, maxx + 1);
             }
 
-            Rectangle place = new Rectangle(minx * scale, miny * scale, (maxx - minx) * scale + scale , (maxy - miny) * scale + scale);
+            Rectangle place = new Rectangle(minx * scale - scale, miny * scale - scale, (maxx - minx) * scale + scale*2 , (maxy - miny) * scale + scale*2);
             paintImmediately(place);
 //            repaint(place);
         }
@@ -95,10 +93,6 @@ public class GamePanel extends JPanel implements DrawObserver {
     public void clear() {
         field = new Point[height][width];
         repaint();
-    }
-
-    public void setStatusPanel(GameStatus statusPanel) {
-        this.statusPanel = statusPanel;
     }
 
 }

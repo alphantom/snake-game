@@ -18,6 +18,8 @@ public class Point implements Cloneable {
 
     private final int step = SettingUtil.SCALE;
 
+    private int diameter = step - 3;
+
     public Point(int x, int y) {
         this.x = x;
         this.y = y;
@@ -40,7 +42,20 @@ public class Point implements Cloneable {
         this.r = color[0];
         this.g = color[1];
         this.b = color[2];
+    }
 
+    public Point(int x, int y, short[] color, float diameterMultiplier) {
+        this.x = x;
+        this.y = y;
+
+        scaledX = x/step;
+        scaledY = y/step;
+
+        this.r = color[0];
+        this.g = color[1];
+        this.b = color[2];
+
+        calculateDiameter(diameterMultiplier);
     }
 
     public Point(Point point) {
@@ -53,6 +68,8 @@ public class Point implements Cloneable {
         r = point.r;
         g = point.g;
         b = point.b;
+
+        diameter = point.diameter;
     }
 
     public void moveUp() {
@@ -137,6 +154,11 @@ public class Point implements Cloneable {
         this.g = g;
         this.b = b;
     }
+
+    public int getDiameter() {
+        return diameter;
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Point)) return false;
@@ -144,4 +166,24 @@ public class Point implements Cloneable {
         return that.x == this.x && that.y == this.y;
     }
 
+    public void resetDiameter() {
+        diameter = step - 3;
+    }
+
+    public void diameterMultiplier(float multiplier) {
+        calculateDiameter(multiplier);
+    }
+
+    private void calculateDiameter(float multiplier) {
+        diameter = (int) (diameter * multiplier);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("Point {");
+        builder.append("x=").append(x);
+        builder.append(", y=").append(y);
+        builder.append(", step=").append(step);
+        return builder.toString();
+    }
 }
